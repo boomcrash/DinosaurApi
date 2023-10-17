@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
+from typing import List
 
 app = FastAPI()
 
@@ -24,7 +25,7 @@ dinosaurios = [
 ]
 
 # Obtener todos los dinosaurios
-@app.get("/dinosaurios", response_model=list)
+@app.get("/dinosaurios/", response_model=List[Dinosaurio])
 async def read_dinosaurios():
     return dinosaurios
 
@@ -37,7 +38,7 @@ async def read_dinosaurio(dinosaurio_id: int):
     return dinosaurio
 
 # Agregar un nuevo dinosaurio
-@app.post("/dinosaurios", response_model=Dinosaurio)
+@app.post("/dinosaurios/", response_model=Dinosaurio)
 async def create_dinosaurio(dinosaurio: Dinosaurio):
     dinosaurios.append(dinosaurio)
     return dinosaurio
@@ -59,3 +60,7 @@ async def delete_dinosaurio(dinosaurio_id: int):
         raise HTTPException(status_code=404, detail="Dinosaurio no encontrado")
     deleted_dinosaurio = dinosaurios.pop(index)
     return deleted_dinosaurio
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

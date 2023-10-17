@@ -71,6 +71,23 @@ async def delete_dinosaurio(dinosaurio_id: int):
     deleted_dinosaurio = dinosaurios.pop(index)
     return deleted_dinosaurio
 
+
+# Modelo Pydantic para el formulario de inicio de sesión
+class LoginForm(BaseModel):
+    username: str
+    password: str
+
+# Información de usuario válida (puedes personalizar esto)
+valid_user = "admin"
+valid_password = "admin"
+
+# Ruta para verificar el inicio de sesión
+@app.post("/login")
+async def login(form: LoginForm):
+    if form.username == valid_user and form.password == valid_password:
+        return {"success": True}
+    return {"success": False}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

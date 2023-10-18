@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException, status
 from pydantic import BaseModel
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
@@ -50,6 +50,11 @@ async def read_dinosaurio(dinosaurio_id: int):
 # Agregar un nuevo dinosaurio
 @app.post("/dinosaurios/", response_model=Dinosaurio)
 async def create_dinosaurio(dinosaurio: Dinosaurio):
+    # Verificar si el ID ya existe
+    for dino in dinosaurios:
+        if dinosaurio.id == dino.id:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="ID de dinosaurio ya existe")
+
     dinosaurios.append(dinosaurio)
     return dinosaurio
 
